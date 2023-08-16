@@ -1,9 +1,14 @@
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
   Button,
   FormControl,
   FormLabel,
   Heading,
   Input,
+  ScaleFade,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -19,6 +24,8 @@ export const TaskCreate = () => {
     description: '',
   });
   const dispatch = useDispatch();
+
+  const { isOpen, onClose } = useDisclosure();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask({
@@ -36,6 +43,13 @@ export const TaskCreate = () => {
         id: uuidv4(),
       }),
     );
+    onClose();
+    // Limpiamos el estado de la tarea
+    setTask({
+      id: '',
+      title: '',
+      description: '',
+    });
   };
 
   return (
@@ -48,6 +62,7 @@ export const TaskCreate = () => {
             name="title"
             sx={{ marginBottom: 2 }}
             type="text"
+            value={task.title}
             onChange={handleChange}
           />
         </FormControl>
@@ -58,6 +73,7 @@ export const TaskCreate = () => {
             name="description"
             sx={{ marginBottom: 2 }}
             type="text"
+            value={task.description}
             onChange={handleChange}
           />
         </FormControl>
@@ -71,6 +87,22 @@ export const TaskCreate = () => {
           GUARDAR
         </Button>
       </form>
+      <ScaleFade in={isOpen} initialScale={0.9}>
+        <Alert
+          alignItems="center"
+          flexDirection="column"
+          height="200px"
+          justifyContent="center"
+          status="success"
+          textAlign="center"
+          variant="subtle"
+        >
+          <AlertIcon boxSize="40px" mr={0} />
+          <AlertTitle fontSize="lg" mb={1} mt={4}>
+            Tarea creada!
+          </AlertTitle>
+        </Alert>
+      </ScaleFade>
     </>
   );
 };
