@@ -8,9 +8,8 @@ import {
   Heading,
   Input,
   ScaleFade,
-  useDisclosure,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { v4 as uuidv4 } from 'uuid';
@@ -25,7 +24,7 @@ export const TaskCreate = () => {
   });
   const dispatch = useDispatch();
 
-  const { isOpen, onClose } = useDisclosure();
+  const [isSubmited, setIsSubmited] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask({
@@ -35,15 +34,18 @@ export const TaskCreate = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!task.title || !task.description) return;
+
     e.preventDefault();
-    console.log('se ejecuto');
     dispatch(
       addTask({
         ...task,
         id: uuidv4(),
       }),
     );
-    onClose();
+
+    setIsSubmited(true);
+
     // Limpiamos el estado de la tarea
     setTask({
       id: '',
@@ -51,6 +53,22 @@ export const TaskCreate = () => {
       description: '',
     });
   };
+
+  useEffect(() => {
+    let timer: number;
+
+    if (isSubmited) {
+      timer = setTimeout(() => {
+        setIsSubmited(false);
+      }, 2000);
+    }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [isSubmited]);
 
   return (
     <>
@@ -87,7 +105,7 @@ export const TaskCreate = () => {
           GUARDAR
         </Button>
       </form>
-      <ScaleFade in={isOpen} initialScale={0.9}>
+      <ScaleFade in={isSubmited} initialScale={0.9}>
         <Alert
           alignItems="center"
           flexDirection="column"
