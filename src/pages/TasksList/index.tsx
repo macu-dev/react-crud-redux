@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { RootState } from '../../app/store';
+import { Actions } from '../../components/Actions/Actions';
 import { TableBase } from '../../components/TableBase/TableBase';
 import { Column, Row } from '../../components/TableBase/TableBase.types';
 import { ColumnFactory } from '../../components/TableBase/utils/ColumnFactory';
@@ -14,7 +15,15 @@ export const TasksList = () => {
   const columns: Column[] = [
     ColumnFactory('title', 'title'),
     ColumnFactory('description', 'description'),
+    ColumnFactory('actions', 'actions'),
   ];
+
+  const columnsData = tasks?.map((task) => {
+    return {
+      ...task,
+      actions: <Actions />,
+    };
+  });
 
   return (
     <>
@@ -26,7 +35,7 @@ export const TasksList = () => {
         <TableBase
           columns={columns}
           rowIdIdentifier="id"
-          rows={tasks as unknown as Row[]}
+          rows={columnsData as unknown as Row[]}
         />
       ) : (
         <Text fontSize="xl" sx={{ marginY: 2 }}>
