@@ -1,26 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { AlertStatus } from '@chakra-ui/react';
 
 export interface AlertState {
-  type: string | null;
+  type: AlertStatus | undefined;
   message: string | null;
 }
 
 const initialState: AlertState = {
-  type: null,
+  type: undefined,
   message: null,
 };
-
-export interface AlertPayload {
-  type: string;
-  message: string;
-}
 
 export const alertSlice = createSlice({
   name: 'alert',
   initialState,
   reducers: {
-    setAlert: (state, action: PayloadAction<AlertPayload>) => {
+    setAlert: (state, action: PayloadAction<AlertState>) => {
       state.message = action.payload.message;
       state.type = action.payload.type;
     },
