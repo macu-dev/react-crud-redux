@@ -12,17 +12,18 @@ export const Actions = ({ taskId }: { taskId: string }) => {
   const navigate = useNavigate();
 
   const handleDelete = useCallback(
-    (id: string) => {
+    (id: string) => () => {
       dispatch(deleteTask(id));
       dispatch(
         setAlert({
-          message: 'Tarea eliminado',
+          message: 'Tarea eliminada',
           type: 'error',
         }),
       );
     },
     [dispatch],
   );
+
   return (
     <div>
       <Button
@@ -38,7 +39,7 @@ export const Actions = ({ taskId }: { taskId: string }) => {
         colorScheme="red"
         leftIcon={<DeleteIcon />}
         variant="solid"
-        onClick={() => handleDelete(taskId)}
+        onClick={handleDelete(taskId)}
       >
         Borrar
       </Button>
