@@ -1,19 +1,17 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
   Button,
   FormControl,
   FormLabel,
   Heading,
   Input,
-  ScaleFade,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { v4 as uuidv4 } from 'uuid';
 
+import { setAlert } from '../../features/alert/alertSlice';
 import { addTask } from '../../features/tasks/tasksSlice';
 
 export const TaskCreate = () => {
@@ -23,8 +21,7 @@ export const TaskCreate = () => {
     description: '',
   });
   const dispatch = useDispatch();
-
-  const [isSubmited, setIsSubmited] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask({
@@ -34,9 +31,9 @@ export const TaskCreate = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!task.title || !task.description) return;
 
-    e.preventDefault();
     dispatch(
       addTask({
         ...task,
@@ -44,31 +41,15 @@ export const TaskCreate = () => {
       }),
     );
 
-    setIsSubmited(true);
+    dispatch(
+      setAlert({
+        message: 'Tarea creada!',
+        type: 'success',
+      }),
+    );
 
-    // Limpiamos el estado de la tarea
-    setTask({
-      id: '',
-      title: '',
-      description: '',
-    });
+    navigate('/tasks');
   };
-
-  useEffect(() => {
-    let timer: number;
-
-    if (isSubmited) {
-      timer = setTimeout(() => {
-        setIsSubmited(false);
-      }, 2000);
-    }
-
-    return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
-  }, [isSubmited]);
 
   return (
     <>
@@ -105,22 +86,6 @@ export const TaskCreate = () => {
           GUARDAR
         </Button>
       </form>
-      <ScaleFade in={isSubmited} initialScale={0.9}>
-        <Alert
-          alignItems="center"
-          flexDirection="column"
-          height="200px"
-          justifyContent="center"
-          status="success"
-          textAlign="center"
-          variant="subtle"
-        >
-          <AlertIcon boxSize="40px" mr={0} />
-          <AlertTitle fontSize="lg" mb={1} mt={4}>
-            Tarea creada!
-          </AlertTitle>
-        </Alert>
-      </ScaleFade>
     </>
   );
 };
