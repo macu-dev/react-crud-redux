@@ -1,3 +1,6 @@
+import { useParams } from 'react-router-dom';
+
 export const TaskEdit = () => {
-  return <div>index</div>;
+  const { taskId } = useParams();
+  return <div>{taskId}</div>;
 };

@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
         element: <TaskCreate />,
       },
       {
-        path: '/edit',
+        path: '/edit/:taskId',
         element: <TaskEdit />,
       },
     ],
