@@ -21,7 +21,7 @@ export const TasksList = () => {
   const columnsData = tasks?.map((task) => {
     return {
       ...task,
-      actions: <Actions />,
+      actions: <Actions taskId={task.id} />,
     };
   });
 
