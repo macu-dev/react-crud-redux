@@ -10,12 +10,19 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { v4 as uuidv4 } from 'uuid';
+import { isEmpty } from 'ramda';
 
 import { setAlert } from '../../features/alert/alertSlice';
 import { addTask } from '../../features/tasks/tasksSlice';
 
+type TaskType = {
+  id: string;
+  title: string;
+  description: string;
+};
+
 export const TaskCreate = () => {
-  const [task, setTask] = useState({
+  const [task, setTask] = useState<TaskType>({
     id: '',
     title: '',
     description: '',
@@ -23,23 +30,30 @@ export const TaskCreate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const updateTask = (
+    prevTask: TaskType,
+    name: string,
+    value: string,
+  ): TaskType => ({
+    ...prevTask,
+    [name]: value,
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTask({
-      ...task,
-      [e.target.name]: e.target.value,
-    });
+    const updatedTask = updateTask(task, e.target.name, e.target.value);
+    setTask(updatedTask);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!task.title || !task.description) return;
+    if (isEmpty(task.title || task.description)) return;
 
-    dispatch(
-      addTask({
-        ...task,
-        id: uuidv4(),
-      }),
-    );
+    const newTask: TaskType = {
+      ...task,
+      id: uuidv4(),
+    };
+
+    dispatch(addTask(newTask));
 
     dispatch(
       setAlert({
